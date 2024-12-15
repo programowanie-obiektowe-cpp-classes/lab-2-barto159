@@ -1,44 +1,36 @@
 #include "Resource.hpp"
 #include <iostream>
+#include <memory>
 
 class ResourceManager
 {
 public:
-    
-    ResourceManager() : resource(new Resource())
-    {
-        
-    }
+    // Konstruktor domyœlny
+    ResourceManager() : resource(std::make_unique< Resource >()) {}
 
-   
-    ResourceManager(const ResourceManager& other) : resource(new Resource(*other.resource))
-    {
-        
-    }
+    // Konstruktor kopiuj¹cy
+    ResourceManager(const ResourceManager& other)
+        : resource(std::make_unique< Resource >(*other.resource))
+    {}
 
-   
+    // Operator przypisania kopiuj¹cy
     ResourceManager& operator=(const ResourceManager& other)
     {
-        
         if (this != &other) {
-            delete resource;                          
-            resource = new Resource(*other.resource); 
+            resource = std::make_unique< Resource >(*other.resource);
         }
         return *this;
     }
 
-    
+    // Konstruktor przenosz¹cy
+    ResourceManager(ResourceManager&& other) noexcept = default;
 
-   
-    ~ResourceManager()
-    {
-        
-        delete resource;
-    }
+    // Operator przypisania przenosz¹cy
+    ResourceManager& operator=(ResourceManager&& other) noexcept = default;
 
-    
+    // Metoda dostêpu
     double get() const { return resource->get(); }
 
 private:
-    Resource* resource; 
+    std::unique_ptr< Resource > resource;
 };
